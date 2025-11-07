@@ -4,6 +4,7 @@ orbs:
   node: circleci/node@5.0.3
 
 jobs:
+  # ------------------ Security Checks ------------------
   security-checks:
     docker:
       - image: cimg/node:20.5
@@ -20,21 +21,26 @@ jobs:
           name: Run Security Audit
           command: npm audit --audit-level=moderate || true
 
+  # ------------------ SonarCloud Scan ------------------
   sonarcloud-scan:
     docker:
-      - image: cimg/node:20.5  # Node + npm included
+      - image: cimg/node:20.5
     steps:
       - checkout
       - run:
-          name: Install SonarScanner
-          command: npm install -g sonar-scanner
+          name: Install dependencies including SonarScanner
+          command: |
+            npm install
+            npm install --save-dev sonar-scanner
       - run:
           name: Run SonarCloud Analysis
           command: |
-            sonar-scanner \
+            npx sonar-scanner \
               -Dsonar.projectKey=SindiswaN_-secure-Customer-International-Payments-Portal \
               -Dsonar.organization=sindiswan \
               -Dsonar.projectName="APDS Payments Portal" \
+              -Dsonar.projectVersion=1.0 \
+              -Dsonar.sources=. \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=$SONAR_TOKEN
 
