@@ -6,7 +6,7 @@ orbs:
 jobs:
   security-checks:
     docker:
-      - image: cimg/node:18.17
+      - image: cimg/node:20.5
     steps:
       - checkout
       - run:
@@ -15,7 +15,6 @@ jobs:
       - run:
           name: Run ESLint (Code Quality)
           command: |
-            npm install eslint --save-dev
             npx eslint . || true
       - run:
           name: Run Security Audit
@@ -23,19 +22,12 @@ jobs:
 
   sonarcloud-scan:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/node:20.5  # Node + npm included
     steps:
       - checkout
       - run:
-          name: Install Node.js
-          command: |
-            curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-            apt-get install -y nodejs
-            node -v
-      - run:
           name: Install SonarScanner
-          command: |
-            npm install -g sonar-scanner
+          command: npm install -g sonar-scanner
       - run:
           name: Run SonarCloud Analysis
           command: |
