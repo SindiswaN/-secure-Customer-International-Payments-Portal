@@ -1,26 +1,35 @@
+// db/conn.mjs
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+// Resolve __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const connectionString = process.env.ATLAS_URL || "";
+// Load environment variables
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
-console.log("MongoDB connection string loaded");
+const connectionString = process.env.ATLAS_URL;
+
+if (!connectionString || (!connectionString.startsWith("mongodb://") && !connectionString.startsWith("mongodb+srv://"))) {
+    console.error("❌ Invalid or missing MongoDB connection string in .env file");
+    process.exit(1);
+}
+
+console.log("✅ MongoDB connection string loaded");
 
 const client = new MongoClient(connectionString);
 
-let conn;
+let db;
 try {
-    conn = await client.connect();
-    console.log("mongodb is CONNECTED!!! :)");
-} catch(e) {
-    console.error("MongoDB connection error:", e.message);
+    await client.connect();
+    db = client.db("customer_payments");
+    console.log("🟢 MongoDB Connected Successfully!");
+} catch (e) {
+    console.error("❌ MongoDB connection error:", e.message);
+    process.exit(1);
 }
 
-let db;
-if (conn) {
-  db = client.db("apds_database");
-} else {
-  throw new Error("Database connection failed");
-}
 export default db;
