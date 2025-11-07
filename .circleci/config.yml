@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.3
+  sonarcloud: sonarsource/sonarcloud@1.0.3
 
 jobs:
   # ---------------- SECURITY CHECKS JOB ----------------
@@ -10,34 +11,36 @@ jobs:
       - image: cimg/node:20.5
     steps:
       - checkout
+      - node/install-packages:
+          pkg-manager: npm
       - run:
           name: Install Dependencies
           command: npm install
       - run:
           name: Run ESLint (Code Quality)
           command: |
-            npx eslint . || true
+            npx eslint . --ext .js,.jsx,.mjs --ignore-path .gitignore || echo "ESLint completed"
       - run:
           name: Run Security Audit
-          command: npm audit --audit-level=moderate || true
+          command: npm audit --audit-level=moderate || echo "Security audit completed"
+      - run:
+          name: Generate Test Coverage (if tests exist)
+          command: |
+            if [ -f "package.json" ] && grep -q "\"test\"" package.json; then
+              npm test -- --coverage --watchAll=false || echo "Tests completed"
+            else
+              echo "No tests configured"
+            fi
 
   # ---------------- SONARCLOUD SCAN JOB ----------------
   sonarcloud-scan:
     docker:
-      - image: sonarsource/sonar-scanner-cli:latest
+      - image: cimg/node:20.5
     steps:
       - checkout
-      - run:
-          name: Run SonarCloud Analysis
-          command: |
-            sonar-scanner \
-              -Dsonar.projectKey=SindiswaN_-secure-Customer-International-Payments-Portal \
-              -Dsonar.organization=sindiswan \
-              -Dsonar.projectName="APDS Payments Portal" \
-              -Dsonar.projectVersion=1.0 \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=$SONAR_TOKEN
+      - node/install-packages:
+          pkg-manager: npm
+      - sonarcloud/scan
 
 workflows:
   version: 2
@@ -47,3 +50,4 @@ workflows:
       - sonarcloud-scan:
           requires:
             - security-checks
+          context: sonarcloud

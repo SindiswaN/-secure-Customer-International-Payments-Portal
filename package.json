@@ -9,5 +9,8 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.20.0"
+  },
+  "devDependencies": {
+    "sonar-scanner": "^3.1.0"
   }
 }
