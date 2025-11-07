@@ -4,7 +4,6 @@ orbs:
   node: circleci/node@5.0.3
 
 jobs:
-  # ------------------ Security Checks ------------------
   security-checks:
     docker:
       - image: cimg/node:20.5
@@ -21,17 +20,14 @@ jobs:
           name: Run Security Audit
           command: npm audit --audit-level=moderate || true
 
-  # ------------------ SonarCloud Scan ------------------
   sonarcloud-scan:
     docker:
       - image: cimg/node:20.5
     steps:
       - checkout
       - run:
-          name: Install dependencies including SonarScanner
-          command: |
-            npm install
-            npm install --save-dev sonar-scanner
+          name: Install Dependencies
+          command: npm install
       - run:
           name: Run SonarCloud Analysis
           command: |
