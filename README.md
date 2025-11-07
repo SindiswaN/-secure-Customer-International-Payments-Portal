@@ -131,3 +131,142 @@ o	At least 1 uppercase letter
 o	At least 1 lowercase letter
 o	At least 1 number
 o	At least 1 special character
+
+
+
+
+TASK 3 READ ME FILE:
+
+APDS Secure Customer International Payments Portal
+Project Overview
+
+The APDS Secure Customer International Payments Portal is a web application developed for an international bank to handle internal international payments securely.
+
+Customers can log in to make payments.
+
+Employees can verify transactions and forward them to SWIFT.
+
+All sensitive data is protected via hashed passwords, input validation, and HTTPS encryption.
+
+Security measures prevent XSS, SQL/NoSQL injection, and CSRF attacks.
+
+Technologies Used
+
+Frontend: React, Axios
+
+Backend: Node.js, Express
+
+Database: MongoDB
+
+Security: Bcrypt (password hashing), SSL (HTTPS)
+
+DevOps/CI: CircleCI, SonarCloud (code analysis)
+
+Validation: Regex-based input validation
+
+Key Features
+
+Customer Login
+
+Pre-registered users only (no registration process)
+
+Username and password authentication
+
+Role-based access (customer or employee)
+
+Payment Processing
+
+Customers can enter payment details:
+
+Amount, currency, source/target account, beneficiary name, SWIFT code, purpose
+
+Frontend validation using regex
+
+Backend validation and sanitization
+
+Employee Portal
+
+Employees view submitted payments
+
+Verify account information and SWIFT code
+
+Submit verified payments to SWIFT
+
+Security
+
+Passwords hashed with bcrypt
+
+All traffic served via HTTPS
+
+Input sanitized to prevent XSS and injection attacks
+
+Frontend Testing Instructions
+
+Follow these steps to test the application using the frontend:
+
+Start the Backend
+
+cd backend
+node server.mjs
+
+
+Ensure HTTPS certificates are correctly configured.
+
+The backend runs on: https://localhost:5001
+
+Start the Frontend
+
+cd frontend
+npm install
+npm start
+
+
+The frontend runs on: https://localhost:3000
+
+Login with Demo Accounts
+
+Customer:
+Username: sarah_smith
+Password: password123
+
+Employee:
+Username: admin
+Password: admin123
+
+Customer Actions
+
+Log in as customer
+
+Fill in the payment form
+
+Click Pay Now
+
+Check for validation errors if data is invalid
+
+Employee Actions
+
+Log in as employee
+
+View submitted transactions
+
+Verify account information and SWIFT code
+
+Click Submit to SWIFT
+
+Validation and Security Checks
+
+All input fields are validated with regex patterns.
+
+Backend sanitizes input before database storage.
+
+Passwords stored securely using bcrypt.
+
+All communication occurs over HTTPS.
+
+Notes
+
+Ensure Node.js version 20+ is installed.
+
+MongoDB must be running locally or via a cloud connection.
+
+For dev purposes, self-signed SSL certificates are used. Production requires valid certificates.
